@@ -35,7 +35,7 @@ SDL_Texture *render_text(SDL_Renderer *renderer, const char *text, TTF_Font *fon
     SDL_Surface *surface;
     SDL_Texture *texture;
 
-    surface = TTF_RenderText_Solid(font, text, color);
+    surface = TTF_RenderUTF8_Solid(font, text, color);
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     rect->w = surface->w;
     rect->h = surface->h;
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
     socketInitializeDefault();
 
-    printf("curl init\n");
+    printf("sdl init\n");
     curl_global_init(CURL_GLOBAL_DEFAULT);
     romfsInit();
     
@@ -101,8 +101,25 @@ int main(int argc, char *argv[])
                     exit_requested = 1;
             }
         }
+
         SDL_RenderClear(renderer);
-        
+
+        SDL_Rect t1_pos = {0, 0, 0, 0};
+        SDL_Texture *t1 = render_text(renderer, "中文1", font, colors[1], &t1_pos);
+        SDL_RenderCopy(renderer, t1, NULL, &t1_pos);
+
+        SDL_Rect t2_pos = {0, 44, 0, 0};
+        SDL_Texture *t2 = render_text(renderer, "中文2", font, colors[1], &t2_pos);
+        SDL_RenderCopy(renderer, t2, NULL, &t2_pos);
+
+        SDL_Rect t3_pos = {0, 88, 0, 0};
+        SDL_Texture *t3 = render_text(renderer, "中文3", font, colors[1], &t3_pos);
+        SDL_RenderCopy(renderer, t3, NULL, &t3_pos);
+
+        SDL_Rect t4_pos = {0, 132, 0, 0};
+        SDL_Texture *t4 = render_text(renderer, "中文4", font, colors[1], &t4_pos);
+        SDL_RenderCopy(renderer, t4, NULL, &t4_pos);
+
         SDL_RenderPresent(renderer);
 
         SDL_Delay(wait);
