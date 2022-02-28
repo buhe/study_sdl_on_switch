@@ -94,13 +94,12 @@ int main(int argc, char *argv[])
     TTF_Font *font = TTF_OpenFont("romfs:/data/simhei.ttf", 36);
 
     SDL_Window *window = SDL_CreateWindow("music", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H, SDL_WINDOW_SHOWN);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_Rect t1_pos = {0, 0, 0, 0};
-    SDL_Texture *t1 = render_text(renderer, "1", font, colors[1], &t1_pos);
-
+    SDL_Texture *t1;
     SDL_Rect t2_pos = {0, 44, 0, 0};
-    SDL_Texture *t2 = render_text(renderer, "2", font, colors[1], &t2_pos);
+    SDL_Texture *t2;
 
     SDL_Rect t3_pos = {0, 88, 0, 0};
     SDL_Texture *t3 = render_text(renderer, "中文3", font, colors[1], &t3_pos);
@@ -109,7 +108,7 @@ int main(int argc, char *argv[])
     SDL_Texture *t4 = render_text(renderer, "4", font, colors[1], &t4_pos);
 
     SDL_Rect i1_pos = {0, 176, 0, 0};
-    SDL_Texture *i1 = render_image(renderer, "romfs:/data/sdl.png", &i1_pos);
+    SDL_Texture *i1;
     
     // Main loop
     while (!exit_requested && appletMainLoop())
@@ -129,21 +128,30 @@ int main(int argc, char *argv[])
 
         SDL_RenderClear(renderer);
 
-        
-        SDL_RenderCopy(renderer, t1, NULL, &t1_pos);
-
-       
-        SDL_RenderCopy(renderer, t2, NULL, &t2_pos);
-
+        t1 = render_text(renderer, "中文1", font, colors[1], &t1_pos);
+        if(t1) {
+            SDL_RenderCopy(renderer, t1, NULL, &t1_pos);
+            SDL_DestroyTexture(t1);
+        }
+            
+        t2 = render_text(renderer, "中文2", font, colors[1], &t2_pos);
+        if(t2) {
+            SDL_RenderCopy(renderer, t2, NULL, &t2_pos);
+            SDL_DestroyTexture(t2);
+        }
+            
      
         SDL_RenderCopy(renderer, t3, NULL, &t3_pos);
 
 
         SDL_RenderCopy(renderer, t4, NULL, &t4_pos);
 
-
-        SDL_RenderCopy(renderer, i1, NULL, &i1_pos);
-
+        i1 = render_image(renderer, "romfs:/data/switch.png", &i1_pos);
+        if(i1) {
+            SDL_RenderCopy(renderer, i1, NULL, &i1_pos);
+            SDL_DestroyTexture(i1);
+        }
+            
         SDL_RenderPresent(renderer);
 
         SDL_Delay(wait);
