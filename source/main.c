@@ -8,7 +8,7 @@
 
 // Include the main libnx system header, for Switch development
 #include <switch.h>
-#include <curl/curl.h>
+// #include <curl/curl.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -45,14 +45,26 @@ SDL_Texture *render_text(SDL_Renderer *renderer, const char *text, TTF_Font *fon
     return texture;
 }
 
+SDL_Texture *render_image(SDL_Renderer *renderer, const char *path, SDL_Rect *rect)
+{
+    SDL_Surface *surface;
+    SDL_Texture *texture;
+    surface = IMG_Load(path);
+    rect->w = surface->w;
+    rect->h = surface->h;
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    return texture;
+}
+
 // Main program entrypoint
 int main(int argc, char *argv[])
 {
 
-    socketInitializeDefault();
+    // socketInitializeDefault();
 
     printf("sdl init\n");
-    curl_global_init(CURL_GLOBAL_DEFAULT);
+    // curl_global_init(CURL_GLOBAL_DEFAULT);
     romfsInit();
     
     int wait = 25;
@@ -77,14 +89,27 @@ int main(int argc, char *argv[])
         {0, 255, 255, 0},   // cyan
         {255, 0, 255, 0},   // purple
     };
-    
 
     // load font from romfs
     TTF_Font *font = TTF_OpenFont("romfs:/data/simhei.ttf", 36);
 
     SDL_Window *window = SDL_CreateWindow("music", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W, SCREEN_H, SDL_WINDOW_SHOWN);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    
+
+    SDL_Rect t1_pos = {0, 0, 0, 0};
+    SDL_Texture *t1 = render_text(renderer, "1", font, colors[1], &t1_pos);
+
+    SDL_Rect t2_pos = {0, 44, 0, 0};
+    SDL_Texture *t2 = render_text(renderer, "2", font, colors[1], &t2_pos);
+
+    SDL_Rect t3_pos = {0, 88, 0, 0};
+    SDL_Texture *t3 = render_text(renderer, "中文3", font, colors[1], &t3_pos);
+
+    SDL_Rect t4_pos = {0, 132, 0, 0};
+    SDL_Texture *t4 = render_text(renderer, "4", font, colors[1], &t4_pos);
+
+    SDL_Rect i1_pos = {0, 176, 0, 0};
+    SDL_Texture *i1 = render_image(renderer, "romfs:/data/sdl.png", &i1_pos);
     
     // Main loop
     while (!exit_requested && appletMainLoop())
@@ -104,21 +129,20 @@ int main(int argc, char *argv[])
 
         SDL_RenderClear(renderer);
 
-        SDL_Rect t1_pos = {0, 0, 0, 0};
-        SDL_Texture *t1 = render_text(renderer, "中文1", font, colors[1], &t1_pos);
+        
         SDL_RenderCopy(renderer, t1, NULL, &t1_pos);
 
-        SDL_Rect t2_pos = {0, 44, 0, 0};
-        SDL_Texture *t2 = render_text(renderer, "中文2", font, colors[1], &t2_pos);
+       
         SDL_RenderCopy(renderer, t2, NULL, &t2_pos);
 
-        SDL_Rect t3_pos = {0, 88, 0, 0};
-        SDL_Texture *t3 = render_text(renderer, "中文3", font, colors[1], &t3_pos);
+     
         SDL_RenderCopy(renderer, t3, NULL, &t3_pos);
 
-        SDL_Rect t4_pos = {0, 132, 0, 0};
-        SDL_Texture *t4 = render_text(renderer, "中文4", font, colors[1], &t4_pos);
+
         SDL_RenderCopy(renderer, t4, NULL, &t4_pos);
+
+
+        SDL_RenderCopy(renderer, i1, NULL, &i1_pos);
 
         SDL_RenderPresent(renderer);
 
@@ -135,7 +159,7 @@ int main(int argc, char *argv[])
     TTF_Quit();
     SDL_Quit();
     romfsExit();
-    curl_global_cleanup();
-    socketExit();
+    // curl_global_cleanup();
+    // socketExit();
     return 0;
 }
