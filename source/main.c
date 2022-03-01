@@ -13,7 +13,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-
+#include "kiss_sdl.h"
 
 #define SCREEN_W 1280
 #define SCREEN_H 720
